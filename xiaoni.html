@@ -96,6 +96,66 @@
             <strong>5. 小鸭子学游泳</strong>
             <p>小鸭子克服害怕，学会游泳。</p>
         </div>
+        <div class="story-item btn" onclick="playShort(5)">
+            <strong>6. 小松鼠储粮</strong>
+            <p>秋天收集松果，冬天和家人一起吃。</p>
+        </div>
+        <div class="story-item btn" onclick="playShort(6)">
+            <strong>7. 小猪爱刷牙</strong>
+            <p>认真刷牙，牙齿不疼又健康。</p>
+        </div>
+        <div class="story-item btn" onclick="playShort(7)">
+            <strong>8. 小鸟学飞翔</strong>
+            <p>不怕摔倒，终于飞向蓝天。</p>
+        </div>
+        <div class="story-item btn" onclick="playShort(8)">
+            <strong>9. 小猫钓鱼</strong>
+            <p>改掉三心二意，专心钓到了鱼。</p>
+        </div>
+        <div class="story-item btn" onclick="playShort(9)">
+            <strong>10. 小刺猬分果子</strong>
+            <p>用刺扎满果子，带回家和家人分享。</p>
+        </div>
+        <div class="story-item btn" onclick="playShort(10)">
+            <strong>11. 小青蛙成长记</strong>
+            <p>从蝌蚪变成会唱歌的小青蛙。</p>
+        </div>
+        <div class="story-item btn" onclick="playShort(11)">
+            <strong>12. 迷路的小狐狸</strong>
+            <p>记住妈妈的话，安全回到了家。</p>
+        </div>
+        <div class="story-item btn" onclick="playShort(12)">
+            <strong>13. 龟兔赛跑</strong>
+            <p>小乌龟坚持到底，赢得了比赛。</p>
+        </div>
+        <div class="story-item btn" onclick="playShort(13)">
+            <strong>14. 乌鸦喝水</strong>
+            <p>放小石子让水位升高，喝到了水。</p>
+        </div>
+        <div class="story-item btn" onclick="playShort(14)">
+            <strong>15. 小猴子摘桃子</strong>
+            <p>改掉丢三落四，收获满满一篮。</p>
+        </div>
+        <div class="story-item btn" onclick="playShort(15)">
+            <strong>16. 小企鹅学游泳</strong>
+            <p>不怕寒冷，成为游泳小能手。</p>
+        </div>
+        <div class="story-item btn" onclick="playShort(16)">
+            <strong>17. 勤劳的小蜜蜂</strong>
+            <p>采花蜜帮花儿传粉，人人都夸它。</p>
+        </div>
+        <div class="story-item btn" onclick="playShort(17)">
+            <strong>18. 破茧的小蝴蝶</strong>
+            <p>从毛毛虫变成美丽的蝴蝶。</p>
+        </div>
+        <div class="story-item btn" onclick="playShort(18)">
+            <strong>19. 有礼貌的小山羊</strong>
+            <p>过桥时谦让，让爷爷先过。</p>
+        </div>
+        <div class="story-item btn" onclick="playShort(19)">
+            <strong>20. 不睡觉的小星星</strong>
+            <p>眨着眼睛守护小朋友睡觉。</p>
+        </div>
     </div>
 
     <div id="task" class="tab-content">
@@ -131,12 +191,28 @@ var recognition = null;
 var isSpeaking = false;
 var isOnCall = false;
 
+// 已扩展到 20 个短篇故事
 var shortStoryArr = [
     "小蚂蚁们团结一心，下雨前一起把粮食搬到安全的新家，团结力量真大。",
     "小白兔跟着妈妈去森林采蘑菇，牢牢记住妈妈的话，不碰颜色鲜艳的毒蘑菇，做聪明听话的好孩子。",
     "小蜗牛爬得慢慢的，但从不偷懒也不放弃，一步一步坚持往前走，最终顺利走到幼儿园。",
     "小熊找到了甜甜的蜂蜜，没有一个人独享，而是分给好朋友一起品尝，懂得分享更快乐。",
-    "小鸭子一开始怕下水，在妈妈鼓励下勇敢尝试，很快学会游泳，变成活泼的小游泳健将。"
+    "小鸭子一开始怕下水，在妈妈鼓励下勇敢尝试，很快学会游泳，变成活泼的小游泳健将。",
+    "小松鼠秋天努力收集松果，冬天大雪纷飞时，它和家人就能吃到香香的坚果啦。",
+    "小猪不爱刷牙，牙齿里长了蛀牙，疼得直哭，后来每天认真刷牙，牙齿又变白又健康。",
+    "小鸟学飞时摔了好几次，但它不害怕，一次次练习，终于飞向了高高的蓝天。",
+    "小猫钓鱼时三心二意，一会儿追蝴蝶一会儿追蜻蜓，最后一条鱼也没钓到，后来专心钓鱼才成功。",
+    "小刺猬用身上的刺扎满果子，带回家分给爸爸妈妈，大家都说它是懂事的好孩子。",
+    "小青蛙从蝌蚪慢慢长大，长出了腿，学会了跳和唱歌，成为了池塘里的小小歌唱家。",
+    "小狐狸迷路了，它不哭不闹，记住妈妈的话，跟着太阳的方向走，最后安全回到了家。",
+    "小乌龟和兔子赛跑，兔子骄傲睡大觉，小乌龟坚持不停，最后赢得了比赛。",
+    "小乌鸦口渴了，把小石子一颗一颗放进瓶子里，水位升高，终于喝到了水。",
+    "小猴子摘桃子，摘一个丢一个，最后什么也没拿到，后来懂得珍惜，才收获了满满一篮。",
+    "小企鹅不怕冷，在冰天雪地里跟着爸爸学游泳，很快就成了游泳小能手。",
+    "小蜜蜂勤劳采花蜜，帮助花儿传播花粉，大家都夸它是勤劳的小园丁。",
+    "小蝴蝶破茧而出，从丑丑的毛毛虫变成了美丽的蝴蝶，它明白了坚持和成长的意义。",
+    "小山羊过桥时懂得谦让，让年纪大的爷爷先过，大家都夸它有礼貌。",
+    "小星星晚上不睡觉，偷偷眨眼睛，看着小朋友们安安静静进入甜甜的梦乡。"
 ];
 
 var longStoryArr = [
