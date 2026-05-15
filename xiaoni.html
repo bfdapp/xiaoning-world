@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="format-detection" content="telephone=no">
+    <title>小宁的奇幻世界</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+    <style>
+        *{-webkit-box-sizing:border-box;box-sizing:border-box;}
+        body{margin:0;padding:0;font-family:Helvetica,Arial,sans-serif;background:#f5f9ff;font-size:16px;}
+        header{background:#4A9DFF;color:#fff;padding:15px;display:flex;align-items:center;}
+        header img{width:48px;height:48px;border-radius:50%;margin-right:12px;object-fit:cover;}
+        header h1{margin:0;font-size:22px;}
+
+        .tab-wrap{display:flex;background:#fff;border-radius:30px;margin:15px;padding:5px;}
+        .tab-btn{flex:1;padding:10px;border:0;background:transparent;border-radius:25px;font-size:16px;}
+        .tab-btn.active{background:#4A9DFF;color:#fff;}
+
+        .container{padding:0 15px;padding-bottom:80px;}
+        .tab-content{display:none;}
+        .tab-content.active{display:block;}
+
+        .card{background:#fff;border-radius:16px;padding:15px;margin-bottom:15px;}
+        .chat-box{height:320px;overflow-y:auto;margin-bottom:10px;}
+        .chat-left{background:#e4e9f2;border-radius:16px;border-bottom-left-radius:0;padding:10px;margin-bottom:8px;max-width:80%;}
+        .chat-right{background:#4A9DFF;color:#fff;border-radius:16px;border-bottom-right-radius:0;padding:10px;margin:8px 0 8px auto;max-width:80%;}
+
+        .input-row{display:flex;gap:8px;}
+        #msgInput{flex:1;border:1px solid #ddd;border-radius:25px;padding:10px 15px;font-size:16px;}
+        #sendBtn{background:#4A9DFF;color:#fff;border:0;border-radius:25px;padding:0 20px;}
+
+        .story-item{background:#fff;border-radius:16px;padding:15px;margin-bottom:12px;}
+        .story-item strong{color:#4A9DFF;font-size:17px;}
+        .story-item p{margin:5px 0 0;color:#666;font-size:14px;}
+
+        .call-modal{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.85);display:none;flex-direction:column;align-items:center;justify-content:center;z-index:999;}
+        .call-avatar{width:150px;height:150px;border-radius:50%;background:#fff;border:4px solid #4A9DFF;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+        .call-avatar img{width:100%;height:100%;object-fit:cover;}
+        .call-text{color:#fff;font-size:22px;margin-top:15px;}
+        .listen-tip{color:#FFD166;font-size:18px;margin-top:8px;display:none;}
+        .hangup-btn{width:68px;height:68px;border-radius:50%;background:#ef4444;color:#fff;border:0;font-size:24px;margin-top:30px;display:flex;align-items:center;justify-content:center;}
+
+        .bottom-bar{position:fixed;bottom:0;left:0;right:0;background:#fff;padding:12px;box-shadow:0 -2px 8px rgba(0,0,0,0.1);}
+        #callMainBtn{width:100%;background:#06D6A0;color:#fff;border:0;border-radius:30px;padding:14px;font-size:18px;}
+
+        .btn{cursor:pointer;outline:none;}
+    </style>
+</head>
+<body>
+
+<header>
+    <img id="avatarBtn" src="https://picsum.photos/id/64/200/200">
+    <h1>小宁的奇幻世界</h1>
+</header>
+
+<div class="tab-wrap">
+    <button class="tab-btn active btn" data-tab="chat">聊天</button>
+    <button class="tab-btn btn" data-tab="story">故事</button>
+    <button class="tab-btn btn" data-tab="task">互动</button>
+</div>
+
+<div class="container">
+    <div id="chat" class="tab-content active">
+        <div class="card">
+            <div class="chat-box" id="chatBox">
+                <div class="chat-left">你好！我是小宁，很高兴和你聊天～</div>
+            </div>
+            <div class="input-row">
+                <input type="text" id="msgInput" placeholder="输入消息...">
+                <button id="sendBtn" class="btn">发送</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="story" class="tab-content">
+        <div class="story-item btn" onclick="playShort(0)">
+            <strong>1. 小蚂蚁搬家</strong>
+            <p>下雨前小蚂蚁团结一起搬粮食回家。</p>
+        </div>
+        <div class="story-item btn" onclick="playShort(1)">
+            <strong>2. 小兔子采蘑菇</strong>
+            <p>小白兔听话，不采有毒的彩色蘑菇。</p>
+        </div>
+        <div class="story-item btn" onclick="playShort(2)">
+            <strong>3. 小蜗牛上学</strong>
+            <p>小蜗牛很慢，但坚持走到学校。</p>
+        </div>
+        <div class="story-item btn" onclick="playShort(3)">
+            <strong>4. 小熊分蜂蜜</strong>
+            <p>小熊懂得分享，和朋友一起吃蜂蜜。</p>
+        </div>
+        <div class="story-item btn" onclick="playShort(4)">
+            <strong>5. 小鸭子学游泳</strong>
+            <p>小鸭子克服害怕，学会游泳。</p>
+        </div>
+    </div>
+
+    <div id="task" class="tab-content">
+        <div class="card">
+            <h3 style="margin-top:0;color:#4A9DFF;">小朋友互动</h3>
+            <div style="padding:12px;background:#eef6ff;border-radius:12px;margin-top:10px;" class="btn" onclick="openCall()">
+                📞 点击给小宁打电话
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="call-modal" id="callModal">
+    <div class="call-avatar">
+        <img src="https://picsum.photos/id/64/200/200">
+    </div>
+    <div class="call-text" id="callStatus">正在接通...</div>
+    <div class="listen-tip" id="listenTip">🎤 可以跟我说话啦</div>
+    <button class="hangup-btn btn" id="closeCallBtn">
+        <i class="fa fa-phone-slash"></i>
+    </button>
+</div>
+
+<div class="bottom-bar">
+    <button id="callMainBtn" class="btn">
+        <i class="fa fa-phone"></i> 给小宁打电话
+    </button>
+</div>
+
+<script>
+var synth = window.speechSynthesis;
+var recognition = null;
+var isSpeaking = false;
+var isOnCall = false;
+
+var shortStoryArr = [
+    "小蚂蚁们团结一心，下雨前一起把粮食搬到安全的新家，团结力量真大。",
+    "小白兔跟着妈妈去森林采蘑菇，牢牢记住妈妈的话，不碰颜色鲜艳的毒蘑菇，做聪明听话的好孩子。",
+    "小蜗牛爬得慢慢的，但从不偷懒也不放弃，一步一步坚持往前走，最终顺利走到幼儿园。",
+    "小熊找到了甜甜的蜂蜜，没有一个人独享，而是分给好朋友一起品尝，懂得分享更快乐。",
+    "小鸭子一开始怕下水，在妈妈鼓励下勇敢尝试，很快学会游泳，变成活泼的小游泳健将。"
+];
+
+var longStoryArr = [
+    "从前有一只可爱的小白兔，住在森林里一间漂亮的小房子里。每天它都早早起床，在草地上玩耍吃草。有一天兔妈妈带它去森林采蘑菇，认真叮嘱它，花花绿绿特别鲜艳的蘑菇都是有毒的，千万不能吃。小白兔牢牢记在心里，只采摘白白胖胖安全的蘑菇。看到漂亮的彩色蘑菇，也忍住不伸手，回家后妈妈夸奖它懂事又聪明，晚上一起喝了香香的蘑菇汤。",
+    "大树底下住着一群勤劳的小蚂蚁，它们每天出门找食物、搬粮食，大家分工合作从不偷懒。有一天天空乌云密布，马上要下大雨，蚂蚁队长立刻召集大家，抓紧把粮食搬到高处新家。小蚂蚁们排着整齐队伍，齐心协力搬运，虽然个子小，团结在一起力量就很大。刚搬完大雨就下了起来，小蚂蚁们安安稳稳躲在温暖干爽的新家里。",
+    "森林里有一只慢吞吞的小蜗牛，每天背着自己的小房子慢慢爬行。别的小动物跑得飞快，只有小蜗牛一步一步慢慢走。路上有人嘲笑它太慢，小蜗牛一点也不灰心，心里想着只要坚持不停下，早晚能到达目的地。不管刮风还是晴天，它每天坚持赶路，累了就休息一会儿再继续，最后稳稳当当走到幼儿园，大家都为它鼓掌。"
+];
+
+var songArr = [
+    "一闪一闪亮晶晶，满天都是小星星，挂在天空放光明，好像许多小眼睛。",
+    "两只老虎，两只老虎，跑得快，跑得快，一只没有眼睛，一只没有尾巴，真奇怪。",
+    "小兔子乖乖，把门儿开开，快点儿开开，我要进来，不开不开我不开，妈妈没回来，谁来也不开。"
+];
+
+// iOS 语音预热
+function initSpeechOnIOS() {
+    let u = new SpeechSynthesisUtterance(" ");
+    u.volume = 1;
+    synth.speak(u);
+    synth.cancel();
+}
+
+function speakText(txt, callback){
+    if(isSpeaking) return;
+    isSpeaking = true;
+    synth.cancel();
+
+    let utter = new SpeechSynthesisUtterance(txt);
+    utter.lang = "zh-CN";
+    utter.rate = 0.9;
+    utter.volume = 1;
+
+    utter.onend = function(){
+        isSpeaking = false;
+        if(callback) callback();
+    };
+    utter.onerror = function(){
+        isSpeaking = false;
+        if(callback) callback();
+    };
+
+    synth.speak(utter);
+}
+
+function playShort(idx){
+    speakText(shortStoryArr[idx]);
+}
+
+// 标签切换
+var tabBtns = document.querySelectorAll('.tab-btn');
+for(var i=0;i<tabBtns.length;i++){
+    tabBtns[i].onclick = function(){
+        var tabId = this.getAttribute('data-tab');
+        var tabs = document.querySelectorAll('.tab-btn');
+        for(var j=0;j<tabs.length;j++) tabs[j].classList.remove('active');
+        var contents = document.querySelectorAll('.tab-content');
+        for(var k=0;k<contents.length;k++) contents[k].classList.remove('active');
+        this.classList.add('active');
+        document.getElementById(tabId).classList.add('active');
+    };
+}
+
+document.getElementById('avatarBtn').onclick = function(){
+    initSpeechOnIOS();
+    speakText("哈喽，我是小宁，很高兴陪你聊天讲故事。");
+};
+
+// 发送文字消息
+document.getElementById('sendBtn').onclick = function(){
+    var input = document.getElementById('msgInput');
+    var val = input.value.trim();
+    if(!val) return;
+    var box = document.getElementById('chatBox');
+    box.innerHTML += '<div class="chat-right">'+val+'</div>';
+    input.value = "";
+    box.scrollTop = box.scrollHeight;
+
+    setTimeout(function(){
+        var res = "我听懂啦，我们继续聊天吧。";
+        if(val.indexOf("故事")!==-1){
+            var r = Math.floor(Math.random()*shortStoryArr.length);
+            res = shortStoryArr[r];
+        }
+        box.innerHTML += '<div class="chat-left">'+res+'</div>';
+        box.scrollTop = box.scrollHeight;
+    },800);
+};
+
+// 打开通话 适配iPad
+function openCall(){
+    if(isOnCall) return;
+    isOnCall = true;
+    var modal = document.getElementById('callModal');
+    modal.style.display = "flex";
+    document.getElementById('callStatus').innerText = "正在接通...";
+
+    initSpeechOnIOS();
+
+    setTimeout(function(){
+        document.getElementById('callStatus').innerText = "已接通";
+        document.getElementById('listenTip').style.display = "block";
+        // 说完问候语 立刻回调启动麦克风 不卡死
+        speakText("你好呀小朋友，我是小宁，你可以跟我说讲故事、唱儿歌，我都会陪着你。", function(){
+            setTimeout(startRec, 500);
+        });
+    },1200);
+}
+
+// 关闭通话
+function closeCall(){
+    isOnCall = false;
+    document.getElementById('callModal').style.display = "none";
+    document.getElementById('listenTip').style.display = "none";
+    if(recognition){
+        try{recognition.stop();recognition.abort();}catch(e){}
+        recognition = null;
+    }
+    synth.cancel();
+    isSpeaking = false;
+}
+
+// 停止识别
+function stopRecognition(){
+    if(recognition){try{recognition.stop();}catch(e){}recognition=null;}
+}
+
+// 启动语音监听 修复iPad卡死
+function startRec(){
+    if(!window.webkitSpeechRecognition) return;
+    if(recognition || !isOnCall || isSpeaking) return;
+
+    let rec = new webkitSpeechRecognition();
+    rec.lang = "zh-CN";
+    rec.continuous = false;
+    rec.interimResults = false;
+
+    rec.onresult = function(e){
+        let text = e.results[0][0].transcript;
+        stopRecognition();
+
+        if(text.includes("讲故事") || text.includes("听故事")){
+            let r = Math.floor(Math.random()*longStoryArr.length);
+            speakText("好的小朋友，我给你讲一个好听的长故事。"+longStoryArr[r], ()=>{setTimeout(startRec,500);});
+        }else if(text.includes("唱歌") || text.includes("儿歌")){
+            let r = Math.floor(Math.random()*songArr.length);
+            speakText("好呀，我们一起来唱儿歌。"+songArr[r], ()=>{setTimeout(startRec,500);});
+        }else if(text.includes("拜拜") || text.includes("再见")){
+            speakText("拜拜啦小朋友，下次想听故事再打电话给我哦。");
+            setTimeout(closeCall,2500);
+        }else if(text.includes("你好")){
+            speakText("你好呀，我一直都在陪着你呢。", ()=>{setTimeout(startRec,500);});
+        }else{
+            speakText("哇，你说得真好，我听懂啦。", ()=>{setTimeout(startRec,500);});
+        }
+    };
+
+    rec.onerror = function(){
+        stopRecognition();
+        if(isOnCall) setTimeout(startRec, 1200);
+    };
+
+    rec.onend = function(){
+        stopRecognition();
+        if(isOnCall && !isSpeaking){
+            setTimeout(startRec, 500);
+        }
+    };
+
+    recognition = rec;
+    rec.start();
+}
+
+document.getElementById('callMainBtn').onclick = openCall;
+document.getElementById('closeCallBtn').onclick = closeCall;
+</script>
+
+</body>
+</html>
