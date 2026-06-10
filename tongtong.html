@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>彤彤最好的朋友</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+    background:linear-gradient(180deg,#FFE4EC 0%,#FFF0F5 40%,#FFF8F0 100%);
+    min-height:100vh; overflow-x:hidden;
+}
+.home{position:relative;min-height:100vh;padding:24px 16px 90px;z-index:2}
+.avatar-wrap{
+    width:120px;height:120px;border-radius:50%;overflow:hidden;
+    margin:8px auto 14px;border:5px solid rgba(255,182,193,0.5);
+    box-shadow:0 8px 30px rgba(255,105,180,0.15);
+}
+.avatar-wrap img{width:100%;height:100%;object-fit:cover}
+.name{text-align:center;font-size:28px;font-weight:700;color:#D63384;margin-bottom:2px}
+.subtitle{text-align:center;font-size:13px;color:#FF69B4;margin-bottom:16px}
+.daily-card{
+    background:linear-gradient(135deg,#FF9A9E,#FECFEF);border-radius:16px;
+    padding:16px 18px;color:#fff;margin-bottom:16px;
+    box-shadow:0 4px 16px rgba(255,154,158,0.3);
+}
+.daily-card .title{font-size:13px;opacity:0.9;margin-bottom:5px}
+.daily-card .content{font-size:15px;font-weight:600;line-height:1.5}
+.daily-card .refresh{float:right;background:rgba(255,255,255,0.2);border:none;color:#fff;padding:3px 10px;border-radius:10px;cursor:pointer;font-size:11px;margin-top:6px}
+.sec-title{font-size:16px;font-weight:600;color:#D63384;margin-bottom:10px;margin-top:16px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+.grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:16px}
+.grid-btn{
+    background:#fff;border:none;border-radius:14px;padding:14px 6px;
+    cursor:pointer;box-shadow:0 2px 8px rgba(255,105,180,0.06);
+    color:#555;font-size:12px;text-align:center;transition:all 0.1s;
+    border:2px solid transparent;touch-action:manipulation;
+}
+.grid-btn:active{background:#FFE4EC;border-color:#FFB6C1}
+.grid-btn .icon{font-size:24px;display:block;margin-bottom:4px}
+.call-mega{
+    display:block;width:100%;padding:16px;border:none;border-radius:22px;
+    background:linear-gradient(135deg,#4CAF50,#66BB6A);
+    color:#fff;font-size:18px;font-weight:700;cursor:pointer;
+    box-shadow:0 6px 20px rgba(76,175,80,0.35);letter-spacing:1px;
+    touch-action:manipulation;
+}
+.call-mega:active{transform:scale(0.97)}
+.call-mega .sub{font-size:12px;font-weight:400;opacity:0.8;display:block;margin-top:3px}
+.call-screen{
+    display:none;position:fixed;top:0;left:0;width:100%;height:100%;
+    background:linear-gradient(180deg,#FFB6C1,#FF69B4,#DB7093);
+    flex-direction:column;z-index:100;
+}
+.call-screen.show{display:flex}
+.call-top{display:flex;align-items:center;padding:12px 14px;color:#fff;flex-shrink:0}
+.call-back{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,0.2);border:none;color:#fff;font-size:14px;cursor:pointer;touch-action:manipulation}
+.call-top-name{flex:1;font-size:17px;font-weight:600;text-align:center}
+.call-top-time{font-size:13px;opacity:0.7}
+.call-chat{flex:1;overflow-y:auto;padding:0 14px 8px;-webkit-overflow-scrolling:touch}
+.call-msg{max-width:80%;padding:8px 14px;border-radius:16px;margin-bottom:7px;font-size:14px;line-height:1.5;word-break:break-word}
+.call-msg.right{background:rgba(255,255,255,0.9);color:#333;border-top-right-radius:4px;margin-left:auto}
+.call-msg.left{background:rgba(255,255,255,0.15);color:#fff;border-top-left-radius:4px}
+.call-msg.system{text-align:center;font-size:12px;opacity:0.7;background:transparent;color:#fff;max-width:100%;padding:4px}
+.call-bottom{flex-shrink:0}
+.call-tips{padding:4px 14px;display:flex;gap:6px;overflow-x:auto;justify-content:center;flex-wrap:wrap}
+.call-tip-btn{
+    background:rgba(255,255,255,0.15);border:none;color:#fff;padding:6px 14px;
+    border-radius:16px;font-size:12px;cursor:pointer;touch-action:manipulation;
+}
+.call-tip-btn:active{background:rgba(255,255,255,0.3)}
+.call-input-row{display:none;padding:8px 14px 14px;gap:8px;align-items:center}
+.call-input-row.show{display:flex}
+.call-input-row input{flex:1;padding:10px 14px;border-radius:20px;border:none;font-size:14px;background:rgba(255,255,255,0.85);outline:none}
+.call-input-row button{width:40px;height:40px;border-radius:50%;background:#4CAF50;color:#fff;border:none;font-size:16px;cursor:pointer;touch-action:manipulation}
+.hangup-row{display:flex;justify-content:center;padding:6px 0 18px}
+.hangup-btn{width:56px;height:56px;border-radius:50%;background:#ff3b30;color:#fff;border:none;font-size:22px;cursor:pointer;touch-action:manipulation}
+.hangup-btn:active{transform:scale(0.9)}
+.thinking{text-align:center;color:rgba(255,255,255,0.7);font-size:13px;padding:6px}
+.thinking span{animation:dot 1.4s infinite;opacity:0}
+.thinking span:nth-child(2){animation-delay:.2s}
+.thinking span:nth-child(3){animation-delay:.4s}
+@keyframes dot{0%,100%{opacity:0}50%{opacity:1}}
+</style>
+</head>
+<body>
+
+<div class="home" id="home">
+    <div class="avatar-wrap" style="text-align:center">
+        <img src="https://picsum.photos/id/64/200/200" alt="彤彤">
+    </div>
+    <div class="name">彤彤</div>
+    <div class="subtitle">💕 你最好的朋友</div>
+    <div class="daily-card" id="dailyCard">
+        <div class="title">🌟 今日推荐</div>
+        <div class="content" id="dailyContent">正在为你准备...</div>
+        <button class="refresh" id="dailyRefresh">换一个 ↻</button>
+    </div>
+    <div class="sec-title">🎈 和彤彤一起玩</div>
+    <div class="grid">
+        <button class="grid-btn" data-t="给我讲一个有趣的故事吧！"><span class="icon">📖</span>讲故事</button>
+        <button class="grid-btn" data-t="唱一首好听的儿歌，把歌词也说出来"><span class="icon">🎵</span>唱儿歌</button>
+        <button class="grid-btn" data-t="出个简单的谜语给我猜猜！"><span class="icon">🧩</span>猜谜语</button>
+        <button class="grid-btn" data-t="讲一个好笑的笑话！"><span class="icon">😂</span>讲笑话</button>
+        <button class="grid-btn" data-t="教我一首简单的古诗吧"><span class="icon">📜</span>背古诗</button>
+        <button class="grid-btn" data-t="告诉我一个有趣的小知识！"><span class="icon">🔍</span>小知识</button>
+    </div>
+    <div class="grid2">
+        <button class="grid-btn" data-t="我要睡了，给我讲温馨的睡前故事吧" style="border-color:#FFE4EC"><span class="icon">🌙</span>哄睡故事</button>
+        <button class="grid-btn" data-t="教我怎么画一个简单的小动物"><span class="icon">🎨</span>学画画</button>
+    </div>
+    <button class="call-mega" id="callBtn">📞 给彤彤打电话<p class="sub">想说什么都可以，彤彤一直陪着你</p></button>
+</div>
+
+<div class="call-screen" id="callScreen">
+    <div class="call-top">
+        <button class="call-back" id="callBack">‹</button>
+        <span class="call-top-name">🤳 彤彤</span>
+        <span class="call-top-time" id="callTimer">00:00</span>
+    </div>
+    <div class="call-chat" id="callChat">
+        <div class="call-msg left">你好呀！我是彤彤，你最好的朋友～一起玩吧！🌟</div>
+        <div class="call-msg system" id="inputHint">💡 打字跟我聊天吧</div>
+    </div>
+    <div class="call-bottom">
+        <div class="call-tips" id="callTips">
+            <button class="call-tip-btn" data-t="给我讲个故事">📖讲故事</button>
+            <button class="call-tip-btn" data-t="唱首歌">🎵唱歌</button>
+            <button class="call-tip-btn" data-t="出个谜语">🧩谜语</button>
+            <button class="call-tip-btn" data-t="今天开心吗">😊聊天</button>
+        </div>
+        <div class="call-input-row" id="inputRow">
+            <input type="text" id="msgInput" placeholder="打字跟我说...">
+            <button id="sendBtn">➤</button>
+        </div>
+        <div class="hangup-row">
+            <button class="hangup-btn" id="hangupBtn">📞</button>
+        </div>
+    </div>
+</div>
+
+<script>
+// ============================================================
+//  ⚙️ 配置区 — 部署前改成你自己的值
+// ============================================================
+var AI_KEY = 'sk-fbf04ae740c549ee9eb0fe357dbe98b0';   // 通义千问 API Key
+var AI_URL = 'https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions';
+var TTS_URL = window.location.origin+'/tts';         // 同服务器的语音合成接口
+
+// ============================================================
+//  📱 设备检测
+// ============================================================
+var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || 
+            (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+var supportsSR = !!(window.SpeechRecognition || window.webkitSpeechRecognition);
+
+// ============================================================
+//  🤖 AI 角色设定
+// ============================================================
+var SYS = '你是彤彤，一个温暖有爱心的AI大姐姐，专门陪小朋友聊天玩耍。说话亲切自然，像真的朋友。每段话2-3句，多夸小朋友，用可爱的语气词和emoji。可以做：讲故事、唱儿歌、猜谜语、讲笑话、教古诗、科普知识、哄睡。安全：不说恐怖内容。';
+
+// ============================================================
+//  📦 状态变量
+// ============================================================
+var onCall=false, speaking=false, recog=null;
+var timerInt=null, seconds=0;
+
+// 每日推荐语
+var DAILY=['今天来学一首古诗吧！📜','彤彤给你讲个小蚂蚁的故事～🐜','猜个好玩的小谜语？🧩',
+  '一起唱小星星✨','为什么天是蓝的？教你一个小知识🔍','讲个笑话哈哈笑😂',
+  '学画小猫咪🐱','来玩"我说你猜"🎮','讲个睡前故事🌙','玩动物园游戏🦁'];
+
+function $(id){return document.getElementById(id)}
+
+function updDaily(){
+  var c=$('dailyContent');c.style.opacity='0.5';
+  setTimeout(function(){c.textContent=DAILY[Math.floor(Math.random()*DAILY.length)];c.style.opacity='1'},200);
+}
+
+// ============================================================
+//  🎤 语音朗读（优先服务器版 Xiaoxiao，降级系统 TTS）
+// ============================================================
+var _bestVoice = null;
+
+function initVoice(){
+  var vs = speechSynthesis.getVoices();
+  if(!vs.length) return;
+  var zh = vs.filter(function(v){return v.lang.startsWith('zh')});
+  var pref = ['xiaoxiao','tingting','huihui','yaoyao','samantha'];
+  for(var i=0;i<pref.length;i++){
+    var f = zh.find(function(v){return v.name.toLowerCase().indexOf(pref[i])>=0});
+    if(f){_bestVoice=f;break;}
+  }
+  if(!_bestVoice && zh.length) _bestVoice=zh[0];
+}
+
+async function speak(text){
+  speechSynthesis.cancel();
+  speaking=true;
+
+  // 1. 优先用服务器 TTS（Xiaoxiao 自然女声）
+  try{
+    var r = await fetch(TTS_URL+'?text='+encodeURIComponent(text));
+    if(r.ok){
+      var a = new Audio(URL.createObjectURL(await r.blob()));
+      await new Promise(function(rs){
+        a.onended=function(){speaking=false;rs()};
+        a.onerror=function(){speaking=false;rs()};
+        a.play();
+      });
+      return;
+    }
+  }catch(e){}
+
+  // 2. 降级：系统 TTS（本地直接打开时用）
+  if(!_bestVoice) initVoice();
+  var u = new SpeechSynthesisUtterance(text);
+  u.lang='zh-CN'; u.rate=0.88; u.pitch=isIOS?1.25:1.15; u.volume=1;
+  if(_bestVoice) u.voice=_bestVoice;
+  await new Promise(function(rs){
+    u.onend=function(){speaking=false;rs()};
+    u.onerror=function(){speaking=false;rs()};
+    speechSynthesis.speak(u);
+    if(isIOS) setTimeout(function(){speaking=false;rs()}, Math.max(1500,text.length*70));
+  });
+}
+
+speechSynthesis.onvoiceschanged = initVoice;
+
+// ============================================================
+//  🧠 AI 对话
+// ============================================================
+async function askAI(msg){
+  var r=await fetch(AI_URL,{
+    method:'POST',
+    headers:{'Content-Type':'application/json','Authorization':'Bearer '+AI_KEY},
+    body:JSON.stringify({
+      model:'qwen-turbo',
+      messages:[{role:'system',content:SYS},{role:'user',content:msg}],
+      temperature:0.85,
+      max_tokens:400
+    })
+  });
+  if(!r.ok) throw new Error('API error: '+r.status);
+  return (await r.json()).choices[0].message.content;
+}
+
+// ============================================================
+//  💬 聊天界面
+// ============================================================
+var chatBox=$('callChat');
+
+function addMsg(text, side){
+  var d=document.createElement('div');
+  d.className='call-msg '+side;
+  d.textContent=text;
+  chatBox.appendChild(d);
+  chatBox.scrollTop=99999;
+}
+function addSys(text){
+  var d=document.createElement('div');
+  d.className='call-msg system';
+  d.textContent=text;
+  chatBox.appendChild(d);
+  chatBox.scrollTop=99999;
+}
+function showThink(){
+  var d=document.createElement('div');
+  d.className='thinking'; d.id='tk';
+  d.innerHTML='彤彤在想<span>.</span><span>.</span><span>.</span>';
+  chatBox.appendChild(d);
+  chatBox.scrollTop=99999;
+}
+function hideThink(){var t=$('tk');if(t)t.remove()}
+
+async function handleReply(topic, fromRight){
+  hideThink();
+  if(fromRight) addMsg(topic, 'right');
+  showThink();
+  try{
+    var reply = await askAI(topic);
+    hideThink();
+    addMsg(reply, 'left');
+    await speak(reply);
+  }catch(e){
+    console.error(e);
+    hideThink();
+    addMsg('彤彤听到啦！能再跟我说一遍吗～', 'left');
+    speak('彤彤听到啦！能再跟我说一遍吗～');
+  }
+  if(onCall) setTimeout(startListen, 400);
+}
+
+// ============================================================
+//  📞 通话控制
+// ============================================================
+async function startCall(){
+  if(onCall) return;
+  onCall=true; seconds=0;
+
+  $('home').style.display='none';
+  $('callScreen').classList.add('show');
+  chatBox.innerHTML='';
+  addMsg('你好呀！我是彤彤，你最好的朋友～一起玩吧！🌟', 'left');
+
+  if(isIOS || !supportsSR){
+    $('inputHint').textContent='💡 在下面打字跟我聊天吧！';
+    $('inputRow').classList.add('show');
+    addSys('📝 打字跟我说你想做什么～');
+  } else {
+    addSys('💡 直接跟我说就行，我听着呢');
+  }
+
+  timerInt=setInterval(function(){
+    seconds++;
+    var m=String(Math.floor(seconds/60)).padStart(2,'0');
+    var s=String(seconds%60).padStart(2,'0');
+    $('callTimer').textContent=m+':'+s;
+  },1000);
+
+  // 请求麦克风权限（仅用于触发授权，方便后续语音识别）
+  navigator.mediaDevices?.getUserMedia({audio:true})
+    .then(function(s){s.getTracks().forEach(function(t){t.stop()})})
+    .catch(function(){});
+
+  setTimeout(function(){
+    speak('你好呀小朋友！我是彤彤，想聊天、听故事、唱歌都可以，你想做什么呀？')
+      .then(function(){setTimeout(startListen,600)});
+  },1200);
+}
+
+function endCall(){
+  onCall=false;
+  if(timerInt){clearInterval(timerInt);timerInt=null}
+  stopListen();
+  speechSynthesis.cancel();
+  speaking=false;
+  $('callScreen').classList.remove('show');
+  $('home').style.display='block';
+  $('inputRow').classList.remove('show');
+}
+
+$('callBtn').onclick=startCall;
+$('callBack').onclick=endCall;
+$('hangupBtn').onclick=endCall;
+
+// ============================================================
+//  ⌨️ 文字输入（所有设备都有）
+// ============================================================
+function textSend(){
+  var inp=$('msgInput');
+  var t=inp.value.trim();
+  if(!t) return;
+  inp.value='';
+  stopListen();
+  addMsg(t,'right');
+  handleReply(t,false);
+}
+$('sendBtn').onclick=textSend;
+$('msgInput').onkeypress=function(e){
+  if(e.key==='Enter') textSend();
+};
+
+// ============================================================
+//  🎙️ 语音识别（仅桌面端 Chrome/Edge）
+// ============================================================
+function startListen(){
+  if(isIOS || !onCall || speaking) return;
+  var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if(!SR || recog) return;
+
+  var r = new SR();
+  r.lang='zh-CN';
+  r.continuous=false;
+
+  r.onresult = async function(e){
+    var txt = e.results[0][0].transcript.trim();
+    stopListen();
+    if(!txt){setTimeout(startListen,300);return}
+    if(txt.indexOf('拜拜')>=0||txt.indexOf('再见')>=0||txt.indexOf('挂')>=0){
+      speak('拜拜啦小朋友，想我了再打电话给我哦～💖').then(endCall);
+      return;
+    }
+    addMsg(txt,'right');
+    await handleReply(txt,false);
+  };
+
+  r.onerror = function(){
+    stopListen();
+    if(onCall) setTimeout(startListen,1000);
+  };
+  r.onend = function(){
+    stopListen();
+    if(onCall && !speaking) setTimeout(startListen,300);
+  };
+
+  recog=r;
+  r.start();
+}
+
+function stopListen(){
+  if(recog){try{recog.stop()}catch(e){}recog=null}
+}
+
+// ============================================================
+//  🔘 快捷按钮（首页 + 通话中）
+// ============================================================
+[].slice.call(document.querySelectorAll('.grid-btn, .call-tip-btn')).forEach(function(b){
+  b.onclick=async function(){
+    if(!onCall){startCall();return}
+    if(speaking) return;
+    var t=this.dataset.t;
+    if(!t) return;
+    stopListen();
+    addMsg(t,'right');
+    await handleReply(t,false);
+  };
+});
+
+// ============================================================
+//  🚀 启动
+// ============================================================
+updDaily();
+$('dailyRefresh').onclick=updDaily;
+// 立即尝试加载语音（voiceschanged 可能延迟）
+setTimeout(initVoice, 500);
+console.log('💖 彤彤最好的朋友 v3 - 纯前端版');
+console.log('📱 手机打字，电脑可语音');
+</script>
+</body>
+</html>
